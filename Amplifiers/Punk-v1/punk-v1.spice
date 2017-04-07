@@ -1,0 +1,94 @@
+Punk v1 (Class-A Amplifier)
+****
+* Author: Noah Santer (santerkrupp@gmail.com)
+****
+
+*** Parameters ***
+.param rail_voltage = 24V
+.param input_voltage = 930mV
+.param input_frequency = 1KHz
+
+*** Supply ***
+Bvcc vcc 0 V = rail_voltage
+.save @bvcc[i]
+
+*** Signal ***
+Vsig sig 0 dc 0V ac 1V sine(0V input_voltage input_frequency)
+.save v(sig)
+
+*** Load ***
+Rload output 0 8ohm
+.save v(output)
+.save @rload[p]
+
+*** Input ***
+R1 sig 100 1Kohm
+R2 output 100 10Kohm
+C1 100 101 2.2uF
+R3 101 102 2000Kohm
+
+Q1 vcc 101 103 Q2N2222A
+Q2 vcc 103 104 Q2N2222A
+
+R4 103 0 1Kohm
+R5 104 0 1Kohm
+
+*** Current Source ***
+Q3 105 105 vcc Q2N3906
+Q4 102 105 vcc Q2N3906
+R6 105 0 3.3Kohm
+
+*** Active Load ***
+Q5 vcc 102 106h QC4883A
+R7 106h 106 0.22ohm
+C2 102 106l 1000uF
+.save @q5[p]
+
+*** Class-A Driver ***
+R8 106 106l 0.22ohm
+Q6 106l 104 0 QMJL3281A
+.save @q6[p]
+
+*** Output ***
+C3 106 output 2200uH
+
+
+*** Analysis ***
+.control
+tran 10u 1
+
+fourier 1K v(output)
+
+meas tran rmspout rms @rload[p]
+meas tran rmsivcc rms @bvcc[i]
+meas tran avgpq5 avg @q5[p]
+meas tran avgpq6 avg @q6[p]
+.endc
+
+*** Models ***
+.MODEL Q2N2222A npn (
++IS=3.88184e-14 BF=929.846 NF=1.10496 VAF=16.5003
++IKF=0.019539 ISE=1.0168e-11 NE=1.94752 BR=48.4545
++NR=1.07004 VAR=40.538 IKR=0.19539 ISC=1.0168e-11
++NC=4 RB=0.1 IRB=0.1 RBM=0.1
++RE=0.0001 RC=0.426673 XTB=0.1 XTI=1
++EG=1.05 CJE=2.23677e-11 VJE=0.582701 MJE=0.63466
++TF=4.06711e-10 XTF=3.92912 VTF=17712.6 ITF=0.4334
++CJC=2.23943e-11 VJC=0.576146 MJC=0.632796 XCJC=1
++FC=0.170253 CJS=0 VJS=0.75 MJS=0.5
++TR=1e-07 PTF=0 KF=0 AF=1 )
+
+.MODEL QMJL3281A npn IS=9.8145e-12 BF=438.0 NF=1.00 VAF=38 IKF=19.0 ISE=1.0e-12 NE=1.1237388682 BR=4.98985 NR=1.09511 VAR=4.32026 IKR=4.37516 ISC=3.25e-13 NC=3.96875 RB=3.997 RE=0.00 RC=0.06 XTB=0.115253 XTI=1.03146 EG=1.11986 CJE=1.144e-08 VJE=0.468574 MJE=0.34957 TF=2.6769e-9 XTF=7500 VTF=3.0 ITF=1000 CJC=1.093685e-9 VJC=0.623643 MJC=0.482111 XCJC=0.959922 FC=0.1 CJS=0 VJS=0.75 MJS=0.5 TR=1e-07 PTF=0 KF=0 AF=1 Vceo=200
+
+.model QC4883A NPN (level=2 Bf=140 Ikf=100 Is=600f Vaf=100 
++ Rb=1.7 Re=105m RC=0 Isc=150f
++ Cje=1.2n Cjc=72p Tf=875p Vtf=1.2 Itf=1
++ Br=2 Var=22.9 Ikr=36 TR=85n
++ Xtb=0.34 Xtf=1.36 )
+
+.MODEL Q2N3904 npn IS=3.5e-15 BF=160 VAF=400 IKF=0.15 ISE=4e-16 NE=1.26 NF=1 RB=30.1 RC=1 RE=0.1 CJE=15e-12 MJE=0.25 VJE=0.75 CJC=3.6e-12 MJC=0.30 VJC=0.75 FC=0.5 TF=380e-12 XTF=30 VTF=4 ITF=0.4 TR=240e-9 BR=0.7 IKR=0 EG=1.1 XTB=1.5 XTI=3 NC=2 ISC=0
+.MODEL Q2N3906 pnp IS=10e-15 BF=180 VAF=40 IKF=0.6 ISE=30e-15 NE=1.5 NF=1 RB=33 RC=1 RE=0.1 CJE=12e-12 MJE=0.7 VJE=1.0 CJC=12e-12 MJC=0.7 VJC=1.0 FC=0.5 TF=550e-12 XTF=20000 VTF=10 ITF=3.5 TR=10e-9 BR=4 IKR=11 EG=1.1 XTB=1.5 XTI=3 NC=15.5 ISC=0.5e-15 VAR=100 NK=1.0
+
+
+
+.end
