@@ -4,8 +4,8 @@ Punk v2 (Class-A Amplifier)
 ****
 
 *** Parameters ***
-.param rail_voltage = 30V
-.param input_voltage = 130mV
+.param rail_voltage = 24V
+.param input_voltage = 400mV
 .param input_frequency = 1KHz
 
 .param Rq = 1Kohm
@@ -40,7 +40,7 @@ R4 104 105 220ohm
 
 Q5 105 106 107 Q2N3904
 Q6 106 107 0 Q2N3904
-R5 106 vcc 47Kohm
+R5 106 vcc 220Kohm
 R6 107 0 100ohm
 
 *** VAS ***
@@ -49,19 +49,35 @@ R7 108 vcc 1Kohm
 Q8 109 108 vcc Q2N3906
 Q9 109 106 110 Q2N3904
 R8 110 0 100ohm
-C1 101 109 100pF
+C1 101 109 10pF
 
 *** Drive ***
 R9 vcc h 0.0ohm
 R10 l 0 0.0ohm
-Q10 h 109 112 QC4883A
-Q11 112 113 l QC4883A
+Q10a h 109 112ha QC4883A
+Q10b h 109 112hb QC4883A
+Q10c h 109 112hc QC4883A
+Rswamp1 112ha 112 0.22ohm
+Rswamp2 112hb 112 0.22ohm
+Rswamp3 112hc 112 0.22ohm
+
+Q11a 112 113 la QC4883A
+Q11b 112 113 lb QC4883A
+Q11c 112 113 lc QC4883A
+Rswamp4 la l 0.22ohm
+Rswamp5 lb l 0.22ohm
+Rswamp6 lc l 0.22ohm
+
 C2 h 113 100pF
 R11 vcc 115 150ohm
-R12 115 0 330ohm
-R13 115 113 Rq
-.save @q10[p]
-.save @q11[p]
+R12 115b 0 330ohm
+R13 113b 113 Rq
+
+Q12 115b 113b 115 Q2N3906
+
+
+.save @q10a[p]
+.save @q11a[p]
 
 *** Ouput & NFB ***
 R14 112 nfb 100Kohm
@@ -78,8 +94,8 @@ fourier 1K v(output)
 
 meas tran rmspout rms @rload[p]
 meas tran rmsivcc rms @bvcc[i]
-meas tran avgpq5 avg @q10[p]
-meas tran avgpq6 avg @q11[p]
+meas tran avgpq10a avg @q10a[p]
+meas tran avgpq11 avg @q11a[p]
 .endc
 
 *** Models ***
