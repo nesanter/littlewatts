@@ -17,7 +17,7 @@ Punk-1 is a single-ended Class-A design using six transistors.
 (Note: all figures above assume 24V supply and purely resistive load.)
 
 ### Punk Amp 2
-Punk-2 is a single-ended Class-A design using eleven transistors.
+Punk-2 is a single-ended Class-A design using eleven (optionally twelve) transistors.
 
 With a 24V supply:
  * G = 29dB (130mV/1W sensitivity)
