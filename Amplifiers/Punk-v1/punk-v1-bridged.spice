@@ -1,4 +1,4 @@
-Punk v1 (Class-A Amplifier)
+Punk v1 (Class-A Amplifier), Bridged
 ****
 * Author: Noah Santer (santerkrupp@gmail.com)
 ****
@@ -17,10 +17,19 @@ Vsig sig 0 dc 0V ac 1V sine(0V input_voltage input_frequency)
 .save v(sig)
 
 *** Load ***
-Rload output 0 8ohm
-.save v(output)
+Rload output outputi 8ohm
+.save v(output), v(outputi)
 .save @rload[p]
 
+X1 vcc sig nc output PUNK1
+X2 vcc t1 t2 outputi PUNK1
+
+Rt2 output t2 10Kohm
+Rt2b sig t2 10Kohm
+Rt1 t1 0 1Kohm
+
+
+.subckt PUNK1 vcc sig 100 output
 *** Input ***
 R1 sig 100 1Kohm
 R2 output 100 10Kohm
@@ -51,6 +60,7 @@ Q6 106l 104 0 QMJL3281A
 
 *** Output ***
 C3 106 output 2200uF
+.endsub
 
 *** Analysis ***
 .control
